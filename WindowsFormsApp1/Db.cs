@@ -1,49 +1,74 @@
 ﻿using System;
 using System.Data;
+using System.Configuration;
 using MySql.Data.MySqlClient;
+using System.Windows.Forms;
 
 namespace WindowsFormsApp1
 {
     public static class Db
     {
-        // ТУК СЛОЖИ ТВОЯТА ПАРОЛА И БАЗА!
-        private static string connectionString = "Server=localhost;Database=football_db;Uid=root;Pwd=ТВОЯТА_ПАРОЛА;";
+        // Четем стринга за връзка директно от App.config
+        private static string connString = ConfigurationManager.ConnectionStrings["MyDbConn"].ConnectionString;
 
+        // Метод за създаване на връзката
         public static MySqlConnection GetConnection()
         {
-            return new MySqlConnection(connectionString);
+            return new MySqlConnection(connString);
         }
 
-        // За SELECT заявки (връща таблица)
-        public static DataTable GetDataTable(string query, MySqlParameter[] parameters = null)
+        // Метод за извличане на данни (полезен за SELECT заявки и зареждане на DataGridView)
+        public static DataTable GetDataTable(string sql, MySqlParameter[] parameters = null)
         {
-            using (MySqlConnection conn = GetConnection())
+            DataTable dt = new DataTable();
+            try
             {
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlConnection conn = GetConnection())
                 {
-                    if (parameters != null) cmd.Parameters.AddRange(parameters);
-                    using (MySqlDataAdapter da = new MySqlDataAdapter(cmd))
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                     {
-                        DataTable dt = new DataTable();
-                        da.Fill(dt);
-                        return dt;
+                        if (parameters != null)
+                        {
+                            cmd.Parameters.AddRange(parameters);
+                        }
+                        conn.Open();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            dt.Load(reader);
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Грешка при извличане на данни: " + ex.Message, "Грешка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return dt;
         }
 
-        // За INSERT, UPDATE, DELETE (връща брой засегнати редове)
-        public static int ExecuteNonQuery(string query, MySqlParameter[] parameters)
+        // Метод за изпълнение на INSERT, UPDATE и DELETE заявки
+        public static void ExecuteNonQuery(string sql, MySqlParameter[] parameters = null)
         {
-            using (MySqlConnection conn = GetConnection())
+            try
             {
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlConnection conn = GetConnection())
                 {
-                    cmd.Parameters.AddRange(parameters);
-                    conn.Open();
-                    return cmd.ExecuteNonQuery();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        if (parameters != null)
+                        {
+                            cmd.Parameters.AddRange(parameters);
+                        }
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Грешка при изпълнение на заявката: " + ex.Message, "Грешка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw; // Прехвърляме грешката нагоре, за да бъде обработена във формата
             }
         }
     }
-}   
+}
