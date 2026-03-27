@@ -1,38 +1,49 @@
 ﻿using System;
 using System.Data;
-using MySql.Data.MySqlClient; // Увери се, че си инсталирал NuGet пакета MySql.Data
+using MySql.Data.MySqlClient;
 
-public static class Db
+namespace WindowsFormsApp1
 {
-    // Промени данните за връзка според твоята база
-    private static string connString = "Server=localhost;Database=clubs_db;Uid=root;Pwd=your_password;";
-
-    public static DataTable GetDataTable(string sql)
+    public static class Db
     {
-        using (var conn = new MySqlConnection(connString))
+        // ТУК СЛОЖИ ТВОЯТА ПАРОЛА И БАЗА!
+        private static string connectionString = "Server=localhost;Database=football_db;Uid=root;Pwd=ТВОЯТА_ПАРОЛА;";
+
+        public static MySqlConnection GetConnection()
         {
-            using (var cmd = new MySqlCommand(sql, conn))
+            return new MySqlConnection(connectionString);
+        }
+
+        // За SELECT заявки (връща таблица)
+        public static DataTable GetDataTable(string query, MySqlParameter[] parameters = null)
+        {
+            using (MySqlConnection conn = GetConnection())
             {
-                using (var adapter = new MySqlDataAdapter(cmd))
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    DataTable dt = new DataTable();
-                    adapter.Fill(dt);
-                    return dt;
+                    if (parameters != null) cmd.Parameters.AddRange(parameters);
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+                        return dt;
+                    }
+                }
+            }
+        }
+
+        // За INSERT, UPDATE, DELETE (връща брой засегнати редове)
+        public static int ExecuteNonQuery(string query, MySqlParameter[] parameters)
+        {
+            using (MySqlConnection conn = GetConnection())
+            {
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddRange(parameters);
+                    conn.Open();
+                    return cmd.ExecuteNonQuery();
                 }
             }
         }
     }
-
-    public static void ExecuteNonQuery(string sql, MySqlParameter[] parameters)
-    {
-        using (var conn = new MySqlConnection(connString))
-        {
-            conn.Open();
-            using (var cmd = new MySqlCommand(sql, conn))
-            {
-                if (parameters != null) cmd.Parameters.AddRange(parameters);
-                cmd.ExecuteNonQuery();
-            }
-        }
-    }
-}
+}   

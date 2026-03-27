@@ -1,6 +1,6 @@
 ﻿namespace WindowsFormsApp1
 {
-    partial class dgvClubs
+    partial class Form1
     {
         /// <summary>
         /// Required designer variable.
@@ -44,7 +44,6 @@
             this.txtCity.Name = "txtCity";
             this.txtCity.Size = new System.Drawing.Size(100, 20);
             this.txtCity.TabIndex = 0;
-            this.txtCity.TextChanged += new System.EventHandler(this.txtName_TextChanged);
             // 
             // txtName
             // 
@@ -52,7 +51,6 @@
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(100, 20);
             this.txtName.TabIndex = 1;
-            this.txtName.TextChanged += new System.EventHandler(this.txtName_TextChanged);
             // 
             // btnDelete
             // 
@@ -62,7 +60,8 @@
             this.btnDelete.TabIndex = 2;
             this.btnDelete.Text = "button1";
             this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.TextChanged += new System.EventHandler(this.txtName_TextChanged);
+            this.btnDelete.TextChanged += new System.EventHandler(this.btnAdd_Click);
+            this.btnDelete.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // btnEdit
             // 
@@ -72,7 +71,6 @@
             this.btnEdit.TabIndex = 3;
             this.btnEdit.Text = "button2";
             this.btnEdit.UseVisualStyleBackColor = true;
-            this.btnEdit.TextChanged += new System.EventHandler(this.txtName_TextChanged);
             // 
             // btnAdd
             // 
@@ -82,7 +80,6 @@
             this.btnAdd.TabIndex = 4;
             this.btnAdd.Text = "button3";
             this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.TextChanged += new System.EventHandler(this.txtName_TextChanged);
             // 
             // btnLoad
             // 
@@ -92,7 +89,7 @@
             this.btnLoad.TabIndex = 5;
             this.btnLoad.Text = "button4";
             this.btnLoad.UseVisualStyleBackColor = true;
-            this.btnLoad.TextChanged += new System.EventHandler(this.txtName_TextChanged);
+            this.btnLoad.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // dgvClubs1
             // 
@@ -102,7 +99,7 @@
             this.dgvClubs1.Size = new System.Drawing.Size(240, 150);
             this.dgvClubs1.TabIndex = 6;
             // 
-            // dgvClubs
+            // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -114,8 +111,9 @@
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.txtName);
             this.Controls.Add(this.txtCity);
-            this.Name = "dgvClubs";
+            this.Name = "Form1";
             this.Text = "Form1";
+            
             ((System.ComponentModel.ISupportInitialize)(this.dgvClubs1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace WindowsFormsApp1
 {
-    internal class Club
-    {
-    }
+     public class Club
+     
+     {
+            public int ClubId { get; set; }
+            public string Name { get; set; }
+            public string City { get; set; }
+     }
+
 }
